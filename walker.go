@@ -2,7 +2,7 @@ package main
 
 import (
 	"io/ioutil"
-	"path"
+	"path/filepath"
 	"sync"
 )
 
@@ -20,8 +20,8 @@ func processDir(input <-chan string, output chan<- string, fail chan<- error, wg
 			continue
 		}
 		for _, file := range files {
-			if path.Ext(file.Name()) == ".osu" {
-				p := path.Join(dir, file.Name())
+			if filepath.Ext(file.Name()) == ".osu" {
+				p := filepath.Join(dir, file.Name())
 				log("%s found, entering queue\n", p)
 				output <- p
 				break
@@ -53,7 +53,7 @@ func processInputFolder() error {
 		if file.IsDir() {
 			wg.Add(1)
 			go func(f string) {
-				dirChan <- path.Join(inputFolder, f)
+				dirChan <- filepath.Join(inputFolder, f)
 				wg.Done()
 			}(file.Name())
 		}

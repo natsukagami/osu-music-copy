@@ -5,7 +5,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -45,7 +44,7 @@ func doCopy(src, dst string) (err error) {
 		return
 	}
 	defer in.Close()
-	err = os.MkdirAll(path.Dir(dst), 0755|os.ModeDir)
+	err = os.MkdirAll(filepath.Dir(dst), 0755|os.ModeDir)
 	if err != nil {
 		return
 	}
@@ -74,18 +73,18 @@ func copyMp3(input <-chan BeatmapFile, success chan<- BeatmapFile, fail chan<- e
 		Title := strings.Replace(b.Title, "/", "_", -1)
 		Source := strings.Replace(b.Source, "/", "_", -1)
 		var (
-			oldPath = path.Join(path.Dir(b.OsuPath), b.AudioFilename)
-			newPath = path.Join(outputFolder, Artist, Title+".mp3")
+			oldPath = filepath.Join(filepath.Dir(b.OsuPath), b.AudioFilename)
+			newPath = filepath.Join(outputFolder, Artist, Title+".mp3")
 		)
 		if b.Source != "" {
-			newPath = path.Join(outputFolder, Artist, Source+" - "+Title+".mp3")
+			newPath = filepath.Join(outputFolder, Artist, Source+" - "+Title+".mp3")
 		}
 		if ntfsFix {
 			f := func(s string) string { return ntfsInvalidRegex.ReplaceAllString(s, "_") }
 			if b.Source != "" {
-				newPath = path.Join(outputFolder, f(b.Artist), f(b.Source+" - "+b.Title)+".mp3")
+				newPath = filepath.Join(outputFolder, f(b.Artist), f(b.Source+" - "+b.Title)+".mp3")
 			} else {
-				newPath = path.Join(outputFolder, f(b.Artist), f(b.Title)+".mp3")
+				newPath = filepath.Join(outputFolder, f(b.Artist), f(b.Title)+".mp3")
 			}
 		}
 		var err error
@@ -176,10 +175,10 @@ func tagMp3(input <-chan BeatmapFile, success chan<- BeatmapFile, fail chan<- er
 			mp3.SetAlbum("osu!")
 		}
 		if b.BgFilename != "" {
-			artwork, err := ioutil.ReadFile(path.Join(path.Dir(b.OsuPath), b.BgFilename))
+			artwork, err := ioutil.ReadFile(filepath.Join(filepath.Dir(b.OsuPath), b.BgFilename))
 			if err == nil {
 				picType := "image/png"
-				if path.Ext(b.BgFilename) == ".jpg" {
+				if filepath.Ext(b.BgFilename) == ".jpg" {
 					picType = "image/jpeg"
 				}
 				fmt.Println("Found ", b.BgFilename, picType)
