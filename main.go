@@ -41,19 +41,19 @@ func parseInit() error {
 	flag.Parse()
 	inputFolder = flag.Arg(0)
 	if len(inputFolder) == 0 {
-		return errors.New("Please specify the input folder!")
+		return errors.New("Please specify the input folder")
 	}
 	if stats, err := os.Stat(inputFolder); err != nil {
 		return err
 	} else if !stats.IsDir() {
-		return errors.New("Input folder is not a folder!")
+		return errors.New("Input folder is not a folder")
 	}
 	if stats, err := os.Stat(outputFolder); err != nil {
 		if err := os.MkdirAll(outputFolder, 0755|os.ModeDir); err != nil {
 			return err
 		}
 	} else if !stats.IsDir() {
-		return errors.New("Output folder is not a folder!")
+		return errors.New("Output folder is not a folder")
 	}
 	return nil
 }
